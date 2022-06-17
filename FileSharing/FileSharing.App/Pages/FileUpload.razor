@@ -1,0 +1,49 @@
+﻿@page "/upload"
+
+<h3>Upload Files</h3>
+
+<p>
+    <label>
+        Upload
+        <InputFile OnChange="@OnInputFileChange" multiple />
+    </label>
+</p>
+
+<button class="btn btn-primary" @onclick="UploadFiles">Upload</button>
+
+@if (_filesToAdd.Count > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <ul>
+                @foreach (var file in _filesToAdd)
+                {
+                    <li>
+                        File: @file.FileName
+                        <br>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@if (_uploadedFiles.Count > 0)
+{
+    <div class="card">
+        <div class="card-body">
+            <ul>
+                @foreach (var file in _uploadedFiles)
+                {
+                    <li>
+                        File: @file.FileName
+                        <br>
+                        Url: @file.FileUrl
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}
+@code {
+
+}

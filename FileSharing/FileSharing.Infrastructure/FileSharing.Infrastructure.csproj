@@ -16,4 +16,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FileSharing.Common\FileSharing.Common.csproj" />
+    <ProjectReference Include="..\FleSharing.Core\FleSharing.Core.csproj" />
+  </ItemGroup>
+
 </Project>

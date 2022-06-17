@@ -1,4 +1,6 @@
 using FileSharing.API.Extensions;
+using FileSharing.Infrastructure.Services;
+using FleSharing.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddJWTAuthentication();
+builder.Services.AddScoped<IFileDocumentRepository, FileDocumentRepository>();
 
 var app = builder.Build();
 app.UseCors("CorsPolicy");

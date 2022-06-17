@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.API", "FileSharing.API\FileSharing.API.csproj", "{D5E09AB9-3295-4B2E-A34C-C25C5CAE9ECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.API", "FileSharing.API\FileSharing.API.csproj", "{D5E09AB9-3295-4B2E-A34C-C25C5CAE9ECB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleSharing.Core", "FleSharing.Core\FleSharing.Core.csproj", "{4A84D3AD-36A2-4FDC-A037-144BDF5B64EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FleSharing.Core", "FleSharing.Core\FleSharing.Core.csproj", "{4A84D3AD-36A2-4FDC-A037-144BDF5B64EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Infrastructure", "FileSharing.Infrastructure\FileSharing.Infrastructure.csproj", "{5BA35A37-ACF6-4B03-B67A-69808C6239C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.Infrastructure", "FileSharing.Infrastructure\FileSharing.Infrastructure.csproj", "{5BA35A37-ACF6-4B03-B67A-69808C6239C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.Common", "FileSharing.Common\FileSharing.Common.csproj", "{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.Common", "FileSharing.Common\FileSharing.Common.csproj", "{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSharing.App", "FileSharing.App\FileSharing.App.csproj", "{8246E24A-1637-49F3-A993-5A53F69DEF22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.App", "FileSharing.App\FileSharing.App.csproj", "{8246E24A-1637-49F3-A993-5A53F69DEF22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
