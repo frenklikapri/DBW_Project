@@ -37,7 +37,8 @@ namespace FileSharing.Infrastructure.Services
                 IsBlocked = false,
                 UserId = fileUploadDto.UserId,
                 Size = fileUploadDto.Size,
-                FileUrl = url
+                FileUrl = url,
+                UploadedAt = DateTime.UtcNow
             };
 
             _dbContext.FileDocuments.Add(toAdd);
@@ -74,9 +75,29 @@ namespace FileSharing.Infrastructure.Services
                 Size = document.Size,
                 UserId = document.UserId,
                 Id = document.Id,
+                UploadedAt = document.UploadedAt,
             };
 
             return dto;
+        }
+
+        public async Task<List<FileDocumentDto>> GetFilesUploadedByUserAsync(string userId)
+        {
+            var documents = await _dbContext
+                .FileDocuments
+                .Where(d => d.UserId == userId)
+                .Select(d => new FileDocumentDto
+                {
+                    UserId = d.UserId,
+                    Filename = d.Filename,
+                    FileUrl = d.FileUrl,
+                    Id = d.Id,
+                    IsBlocked = d.IsBlocked,
+                    Size = d.Size,
+                    UploadedAt = d.UploadedAt,
+                }).ToListAsync();
+
+            return documents;
         }
 
         public async Task<List<FileUploadResultDto>> SaveAddedFilesAsync()

@@ -14,5 +14,6 @@ namespace FileSharing.Common.Dtos.Files
         public bool IsBlocked { get; set; }
         public string FileUrl { get; set; }
         public string UserId { get; set; }
+        public DateTime UploadedAt { get; set; }
     }
 }

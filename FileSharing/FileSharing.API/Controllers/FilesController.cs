@@ -2,6 +2,7 @@
 using FileSharing.Common.Dtos.Files;
 using FileSharing.Common.Dtos.FileUpload;
 using FleSharing.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -44,7 +45,7 @@ namespace FileSharing.API.Controllers
                     Bytes = bytes,
                     Filename = file.FileName,
                     Size = bytes.Length,
-                    UserId = ""
+                    UserId = HttpContext.GetUserId()
                 });
             }
 
@@ -81,6 +82,14 @@ namespace FileSharing.API.Controllers
                 return NotFound();
 
             return File(bytes.Bytes, "text/plain", bytes.FileName);
+        }
+
+        [Authorize]
+        [HttpGet("getUserFiles/{userId}")]
+        public async Task<ActionResult<List<FileDocumentDto>>> GetUserFiles(string userId)
+        {
+            var files = await _fileDocumentRepository.GetFilesUploadedByUserAsync(userId);
+            return Ok(files);
         }
     }
 }

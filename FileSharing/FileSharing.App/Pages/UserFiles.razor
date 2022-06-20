@@ -1,0 +1,16 @@
+﻿@page "/files"
+@attribute [Authorize]
+
+<AuthorizeView>
+    <Authorized>
+        <h3>UserFiles</h3>
+
+        @foreach(var file in _files)
+        {
+            <p>@file.Filename</p>
+        }
+    </Authorized>
+    <NotAuthorized>
+        Please login!
+    </NotAuthorized>
+</AuthorizeView>

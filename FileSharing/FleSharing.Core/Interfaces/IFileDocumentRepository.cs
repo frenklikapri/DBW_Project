@@ -13,6 +13,7 @@ namespace FleSharing.Core.Interfaces
         void AddFile(FileUploadDto fileUploadDto);
         Task<List<FileUploadResultDto>> SaveAddedFilesAsync();
         Task<FileDocumentDto> GetFileInfoAsync(string url);
+        Task<List<FileDocumentDto>> GetFilesUploadedByUserAsync(string userId);
         Task<FileToDownloadDto> GetFileBytesAsync(string url);
     }
 }

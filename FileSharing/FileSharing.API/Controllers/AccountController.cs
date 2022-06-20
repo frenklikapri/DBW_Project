@@ -71,7 +71,8 @@ namespace FileSharing.API.Controllers
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Email)
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Sid, user.Id),
             };
 
             if (roles is not null)
@@ -89,7 +90,8 @@ namespace FileSharing.API.Controllers
                 issuer: _jwtSettings["validIssuer"],
                 audience: _jwtSettings["validAudience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtSettings["expiryInMinutes"])),
+                //expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtSettings["expiryInMinutes"])),
+                expires: DateTime.Now.AddDays(30),
                 signingCredentials: signingCredentials);
 
             return tokenOptions;

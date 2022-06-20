@@ -19,6 +19,7 @@ namespace FileSharing.Core.Entities
         public bool IsBlocked { get; set; }
         public string FileUrl { get; set; }
         public string UserId { get; set; }
+        public DateTime UploadedAt { get; set; }
 
         public IEnumerable<DownloadLog> DownloadLogs { get; set; }
     }

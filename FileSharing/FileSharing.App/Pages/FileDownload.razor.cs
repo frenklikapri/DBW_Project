@@ -1,4 +1,5 @@
-﻿using FileSharing.App.Extensions;
+﻿using Blazored.LocalStorage;
+using FileSharing.App.Extensions;
 using FileSharing.Common.Dtos.Files;
 using FileSharing.Common.Dtos.Requests;
 using FileSharing.Common.Enums;
@@ -18,6 +19,9 @@ namespace FileSharing.App.Pages
         [Inject]
         public IJSRuntime JS { get; set; }
 
+        [Inject]
+        public ILocalStorageService LocalStorage { get; set; }
+
         private const string _modalUnblockId = "modalUnBlockRequest";
         private const string _modalBlockId = "modalBlockRequest";
 
@@ -25,6 +29,17 @@ namespace FileSharing.App.Pages
         private FileDocumentDto _document = null;
         private BlockFileFormDto _unblockFileDto = new();
         private BlockFileFormDto _blockFileDto = new();
+        private string _userId;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (string.IsNullOrEmpty(_userId))
+            {
+                _userId = await LocalStorage.GetUserId();
+                InvokeAsync(StateHasChanged);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
 
         private async Task GetInfo()
         {
@@ -82,8 +97,7 @@ namespace FileSharing.App.Pages
                 BlockRequestType = blockRequestType,
                 FileDocumentId = _document.Id.ToString(),
                 Reason = blockRequestType == BlockRequestType.Unblock ? _unblockFileDto.Reason : _blockFileDto.Reason,
-                //TODO get userid
-                UserId = ""
+                UserId = _userId
             };
             var result = await Http.PostAsJsonAsync("Requests", dto);
             return result;
