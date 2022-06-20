@@ -1,4 +1,5 @@
-﻿using FileSharing.Common.Dtos.FileUpload;
+﻿using FileSharing.Common.Dtos.Files;
+using FileSharing.Common.Dtos.FileUpload;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,7 @@ namespace FleSharing.Core.Interfaces
     {
         void AddFile(FileUploadDto fileUploadDto);
         Task<List<FileUploadResultDto>> SaveAddedFilesAsync();
+        Task<FileDocumentDto> GetFileInfoAsync(string url);
+        Task<FileToDownloadDto> GetFileBytesAsync(string url);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using FileSharing.API.Extensions;
+using FileSharing.Common.Dtos.Files;
 using FileSharing.Common.Dtos.FileUpload;
 using FleSharing.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Web;
 
 namespace FileSharing.API.Controllers
 {
@@ -49,6 +51,36 @@ namespace FileSharing.API.Controllers
             var results = await _fileDocumentRepository.SaveAddedFilesAsync();
 
             return new CreatedResult(resourcePath, results);
+        }
+
+        [HttpGet("getDocumentInfo/{url}")]
+        public async Task<ActionResult<FileDocumentDto>> GetDocumentInfo(string url)
+        {
+            url = HttpUtility.UrlDecode(url);
+
+            var document = await _fileDocumentRepository.GetFileInfoAsync(url);
+
+            if (document is null)
+                return NotFound();
+
+            return Ok(document);
+        }
+
+        [HttpGet("download/{key}/{url}")]
+        public async Task<ActionResult> DownloadFile(string key, string url)
+        {
+            url = HttpUtility.UrlDecode(url);
+
+            //TODO save key somewhere else
+            if (key != "Key123$%^&*(")
+                return BadRequest();
+
+            var bytes = await _fileDocumentRepository.GetFileBytesAsync(url);
+
+            if (bytes is null)
+                return NotFound();
+
+            return File(bytes.Bytes, "text/plain", bytes.FileName);
         }
     }
 }

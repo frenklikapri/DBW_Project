@@ -73,6 +73,11 @@ namespace FileSharing.App.Pages
                 _filesToAdd = new();
             }
         }
+
+        private void RemoveFile(FileContentDto fileContentDto)
+        {
+            _filesToAdd.Remove(fileContentDto);
+        }
     }
 
     class FileContentDto

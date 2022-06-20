@@ -1,4 +1,5 @@
 ﻿using FileSharing.Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace FileSharing.API.Extensions
@@ -11,6 +12,10 @@ namespace FileSharing.API.Extensions
             {
                 var dataContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 dataContext.Database.Migrate();
+
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                userManager.SeedData(roleManager);
             }
         }
     }

@@ -1,7 +1,11 @@
-﻿using FileSharing.Common.Dtos.FileUpload;
+﻿using FileSharing.Common.Dtos.Files;
+using FileSharing.Common.Dtos.FileUpload;
+using FileSharing.Common.Extensions;
 using FileSharing.Core.Entities;
 using FileSharing.Infrastructure.Data;
 using FleSharing.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +17,19 @@ namespace FileSharing.Infrastructure.Services
     public class FileDocumentRepository : IFileDocumentRepository
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IConfiguration _configuration;
         private List<FileDocument> _documentsToAdd = new();
 
-        public FileDocumentRepository(ApplicationDbContext dbContext)
+        public FileDocumentRepository(ApplicationDbContext dbContext, IConfiguration configuration)
         {
             _dbContext = dbContext;
+            _configuration = configuration;
         }
 
         public void AddFile(FileUploadDto fileUploadDto)
         {
+            var urlHostName = _configuration["UrlGenerationHostName"];
+            var url = urlHostName.GenerateDocumentUrl();
             var toAdd = new FileDocument
             {
                 Bytes = fileUploadDto.Bytes,
@@ -29,11 +37,46 @@ namespace FileSharing.Infrastructure.Services
                 IsBlocked = false,
                 UserId = fileUploadDto.UserId,
                 Size = fileUploadDto.Size,
-                FileUrl = "TODO"
+                FileUrl = url
             };
 
             _dbContext.FileDocuments.Add(toAdd);
             _documentsToAdd.Add(toAdd);
+        }
+
+        public async Task<FileToDownloadDto> GetFileBytesAsync(string url)
+        {
+            var document = await _dbContext
+                .FileDocuments
+                .FirstOrDefaultAsync(d => d.FileUrl == url);
+
+            return new FileToDownloadDto
+            {
+                Bytes = document?.Bytes,
+                FileName = document?.Filename,
+            };
+        }
+
+        public async Task<FileDocumentDto> GetFileInfoAsync(string url)
+        {
+            var document = await _dbContext
+                .FileDocuments
+                .FirstOrDefaultAsync(d => d.FileUrl == url);
+
+            if (document is null)
+                return null;
+
+            var dto = new FileDocumentDto
+            {
+                FileUrl = document.FileUrl,
+                Filename = document.Filename,
+                IsBlocked = document.IsBlocked,
+                Size = document.Size,
+                UserId = document.UserId,
+                Id = document.Id,
+            };
+
+            return dto;
         }
 
         public async Task<List<FileUploadResultDto>> SaveAddedFilesAsync()

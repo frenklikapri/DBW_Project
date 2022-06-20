@@ -1,0 +1,15 @@
+﻿@page "/requests"
+@attribute [Authorize(Roles = "Admin")]
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <h3>RequestsManagement</h3>
+    </Authorized>
+    <NotAuthorized>
+        <p>You don't have access for this page</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

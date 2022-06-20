@@ -12,6 +12,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddJWTAuthentication();
 builder.Services.AddScoped<IFileDocumentRepository, FileDocumentRepository>();
+builder.Services.AddScoped<IRequestsRepository, RequestsRepository>();
 
 var app = builder.Build();
 app.UseCors("CorsPolicy");

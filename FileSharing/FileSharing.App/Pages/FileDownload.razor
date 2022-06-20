@@ -1,0 +1,79 @@
+﻿@page "/download"
+
+<h3>FileDownload</h3>
+
+<input class="form-control" @oninput="(e => UrlOnInput(e))" />
+
+<button class="btn btn-primary" @onclick="GetInfo" disabled="@string.IsNullOrWhiteSpace(_url)">Get Info</button>
+
+@if (_document is not null)
+{
+    <h3>@_document.Filename (@(_document.IsBlocked ? "Blocked" : "Not Blocked"))</h3>
+    <p>@_document.Size</p>
+
+    @if (_document.IsBlocked)
+    {
+        <div class="modal" tabindex="-1" id="modalUnBlockRequest">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Send request for unblocking</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <EditForm Model="_unblockFileDto" OnValidSubmit="SendUnblockRequest" id="frmUnblock">
+                            <DataAnnotationsValidator />
+
+                            <div class="form-group">
+                                <label>Reason</label>
+                                <InputTextArea @bind-Value="_unblockFileDto.Reason" class="form-control" />
+                                <ValidationMessage For="(() => _unblockFileDto.Reason)" />
+                            </div>
+
+                        </EditForm>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" form="frmUnblock" class="btn btn-primary">Send Request</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-success" @onclick="RequestUnblockClicked">Request Unblock</button>
+    }
+    else
+    {
+        <div class="modal" tabindex="-1" id="modalBlockRequest">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Send request for blocking</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <EditForm Model="_blockFileDto" OnValidSubmit="SendBlockRequest" id="frmBlock">
+                            <DataAnnotationsValidator />
+
+                            <div class="form-group">
+                                <label>Reason</label>
+                                <InputTextArea @bind-Value="_blockFileDto.Reason" class="form-control" />
+                                <ValidationMessage For="(() => _blockFileDto.Reason)" />
+                            </div>
+
+                        </EditForm>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" form="frmBlock" class="btn btn-primary">Send Request</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-danger" @onclick="RequestBlockClicked">Request Block</button>
+    }
+
+
+    <button class="btn btn-primary" @onclick="Download" disabled="@_document.IsBlocked">Download</button>
+}
