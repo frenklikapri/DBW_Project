@@ -1,5 +1,7 @@
 ﻿using FileSharing.App.Services;
+using FileSharing.App.Store.Identity;
 using FileSharing.Common.Dtos.Authentication;
+using Fluxor;
 using Microsoft.AspNetCore.Components;
 
 namespace FileSharing.App.Pages
@@ -13,7 +15,10 @@ namespace FileSharing.App.Pages
         
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-        
+
+        [Inject]
+        public IDispatcher Dispatcher { get; set; }
+
         public bool ShowAuthError { get; set; }
         public string Error { get; set; }
 
@@ -29,7 +34,8 @@ namespace FileSharing.App.Pages
             }
             else
             {
-                NavigationManager.NavigateTo("/");
+                Dispatcher.Dispatch(new IdentityAction());
+                NavigationManager.NavigateTo("/", true);
             }
         }
     }

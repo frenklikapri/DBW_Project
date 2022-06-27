@@ -20,7 +20,6 @@ namespace FileSharing.Core.Entities
         public string FileUrl { get; set; }
         public string UserId { get; set; }
         public DateTime UploadedAt { get; set; }
-
-        public IEnumerable<DownloadLog> DownloadLogs { get; set; }
+        public DateTime LastTimeDownloadedAt { get; set; }
     }
 }

@@ -8,6 +8,7 @@
         @foreach(var file in _files)
         {
             <p>@file.Filename</p>
+            <button class="btn btn-danger" @onclick="(() => DeleteFile(file))">Delete</button>
         }
     </Authorized>
     <NotAuthorized>

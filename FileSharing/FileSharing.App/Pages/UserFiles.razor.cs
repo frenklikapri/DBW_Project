@@ -4,6 +4,7 @@ using FileSharing.Common.Dtos.Files;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Net.Http.Json;
+using System.Web;
 
 namespace FileSharing.App.Pages
 {
@@ -41,6 +42,21 @@ namespace FileSharing.App.Pages
             catch (Exception ex)
             {
                 await JS.ShowErrorAsync("Couldn't load your files, please contact the administrator");
+            }
+        }
+
+        async Task DeleteFile(FileDocumentDto file)
+        {
+            var result = await Http.DeleteAsync($"Files/DeleteFile/{HttpUtility.UrlEncode(file.FileUrl)}");
+
+            if (result.IsSuccessStatusCode)
+            {
+                _files.Remove(file);
+                await JS.ShowSuccessAsync("File deleted successfully");
+            }
+            else
+            {
+                await JS.ShowErrorAsync("Couldn't delete the file, please contact the administrator");
             }
         }
     }

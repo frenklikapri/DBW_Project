@@ -1,4 +1,5 @@
-﻿using FileSharing.Common.Dtos.Requests;
+﻿using FileSharing.Common.Dtos.PaginatedTable;
+using FileSharing.Common.Dtos.Requests;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,7 @@ namespace FleSharing.Core.Interfaces
     public interface IRequestsRepository
     {
         Task<bool> AddRequestAsync(AddBlockRequestDto blockRequestDto);
+        Task<PaginatedListResult<BlockRequestDto>> GetBlockRequestsAsync(PaginationParameters paginationParameters);
+        Task<bool> AproveRequestAsync(Guid requestId);
     }
 }

@@ -1,0 +1,170 @@
+﻿@typeparam TItem
+
+@if (RowTemplate != null && HeaderTemplate != null)
+{
+    @if (ShowSearch || ShowPageSize)
+    {
+        <div class="row mt-4">
+            @if (ShowSearch)
+            {
+                <div class="col-sm-7">
+                    <div class="top-bar">
+                        <div class="search">
+                            <div class="search-form pure-form">
+                                <input class="search-input w-100 search_field" type="search" placeholder="@SearchPlaceholder" aria-label="Search"
+                           @oninput="SearchOnChange">
+                                <object data="assets/icons/svg/icon-search.svg" width="20" height="20" class="svg_icon"> </object>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (ShowPageSize)
+            {
+                <div class="@(ShowSearch ? "col-sm-5" : "col-sm-12") right-sec">
+                    <p class="p-2 mb-0">Show </p>
+                    <select class="form-control options"
+                        value="@PageSize"
+                        @onchange="PageSizeChange">
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="-1">All</option>
+                    </select>
+                    <p class="p-2 mb-0">rows</p>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="my-4 tenantRole-table">
+        <table class="@TableCssClass">
+            <thead>
+                @if (ShowCheckboxColumn)
+                {
+                    <tr>
+                        <th style="@CheckboxColumnCssStyle" class="@CheckboxColumnCssClass">
+                            <input type="checkbox" @bind="AllSelected" />
+                        </th>
+                        @HeaderTemplate
+                    </tr>
+                }
+                else
+                {
+                    @HeaderTemplate
+                }
+            </thead>
+            <tbody>
+                @if (HeaderFiltersTemplate != null)
+                {
+                    @HeaderFiltersTemplate
+                }
+
+                @if (_loading || _list is null)
+                {
+                    <tr>
+                        <td colspan="@TotalColumns" class="text-center">Loading...</td>
+                    </tr>
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(GroupBy))
+                    {
+                        foreach (var element in _list)
+                        {
+                            @if (ShowCheckboxColumn)
+                            {
+                                <tr>
+                                    <td style="@CheckboxColumnCssStyle" class="@CheckboxColumnCssClass">
+                                        @if (element.Selected)
+                                        {
+                                            <input type="checkbox" checked
+                           @onchange="((ChangeEventArgs args) => CheckboxChanged(args, element))" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox"
+                           @onchange="((ChangeEventArgs args) => CheckboxChanged(args, element))" />
+                                        }
+                                    </td>
+                                    @RowTemplate(element.Item)
+                                </tr>
+                            }
+                            else
+                            {
+                                @RowTemplate(element.Item)
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var group in _itemsToShow)
+                        {
+                            <tr>
+                                <td colspan="@TotalColumns" style="cursor: pointer;"
+                    @onclick="(() => group.Show = !group.Show)">
+                                    @if (group.Show)
+                                    {
+                                        <i class="fa fa-caret-down mr-1"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-caret-right mr-1"></i>
+                                    }
+                                    <b>@group.Name</b>
+                                </td>
+                            </tr>
+                            if (group.Show)
+                            {
+                                foreach (var item in group.Items)
+                                {
+                                    if (item.Show)
+                                    {
+                                        @if (ShowCheckboxColumn)
+                                        {
+                                            <tr>
+                                                <td style="@CheckboxColumnCssStyle" class="@CheckboxColumnCssClass">
+                                                    @if (item.Selected)
+                                                    {
+                                                        <input type="checkbox" checked
+                           @onchange="((ChangeEventArgs args) => CheckboxChanged(args, item))" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="checkbox"
+                           @onchange="((ChangeEventArgs args) => CheckboxChanged(args, item))" />
+                                                    }
+                                                </td>
+                                                @RowTemplate(item.Item)
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @RowTemplate(item.Item)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (HasPagination && Links is not null)
+    {
+        <nav aria-label="..." class="tenants-pager">
+            <ul class="pagination">
+                @foreach (var link in Links.Where(l => ShowPageNumbers || l.Text == "Next" || l.Text == "Previous"))
+                {
+                    <li @onclick="@(() => SelectedPageInternal(link))"
+            class="page-item @(link.Enabled ? null : "disabled") @(link.Active ? "active" : null)">
+                        <span class="page-link" href="#">@link.Text</span>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+}

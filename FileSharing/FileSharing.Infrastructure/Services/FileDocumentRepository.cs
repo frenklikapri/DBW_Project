@@ -38,11 +38,40 @@ namespace FileSharing.Infrastructure.Services
                 UserId = fileUploadDto.UserId,
                 Size = fileUploadDto.Size,
                 FileUrl = url,
-                UploadedAt = DateTime.UtcNow
+                UploadedAt = DateTime.UtcNow,
+                LastTimeDownloadedAt = DateTime.UtcNow
             };
 
             _dbContext.FileDocuments.Add(toAdd);
             _documentsToAdd.Add(toAdd);
+        }
+
+        public async Task<bool> DeleteFileAsync(string url)
+        {
+            var file = await _dbContext
+                .FileDocuments
+                .FirstOrDefaultAsync(f => f.FileUrl == url);
+
+            if (file is null)
+                return false;
+
+            _dbContext
+                .FileDocuments
+                .Remove(file);
+
+            var requests = await _dbContext
+                .BlockRequests
+                .Where(b => b.FileDocumentId == file.Id)
+                .ToListAsync();
+
+            foreach (var request in requests)
+            {
+                _dbContext
+                    .BlockRequests
+                    .Remove(request);
+            }
+
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public async Task<FileToDownloadDto> GetFileBytesAsync(string url)
@@ -50,6 +79,10 @@ namespace FileSharing.Infrastructure.Services
             var document = await _dbContext
                 .FileDocuments
                 .FirstOrDefaultAsync(d => d.FileUrl == url);
+
+            document.LastTimeDownloadedAt = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
 
             return new FileToDownloadDto
             {

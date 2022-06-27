@@ -1,4 +1,5 @@
 using FileSharing.API.Extensions;
+using FileSharing.API.Workers;
 using FileSharing.Infrastructure.Services;
 using FleSharing.Core.Interfaces;
 
@@ -13,6 +14,8 @@ builder.Services.AddSwaggerGen();
 builder.AddJWTAuthentication();
 builder.Services.AddScoped<IFileDocumentRepository, FileDocumentRepository>();
 builder.Services.AddScoped<IRequestsRepository, RequestsRepository>();
+builder.Services.AddScoped<IInactiveFileRemoverService, InactiveFileRemoverService>();
+builder.Services.AddHostedService<InactiveFilesWorker>();
 
 var app = builder.Build();
 app.UseCors("CorsPolicy");

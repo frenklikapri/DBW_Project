@@ -1,5 +1,7 @@
-﻿using FileSharing.Common.Dtos.Requests;
+﻿using FileSharing.Common.Dtos.PaginatedTable;
+using FileSharing.Common.Dtos.Requests;
 using FleSharing.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +33,34 @@ namespace FileSharing.API.Controllers
             }
 
             return BadRequest("Couldn't create the request");
+        }
+
+        [HttpGet("getAllRequests")]
+        public async Task<ActionResult<PaginatedListResult<BlockRequestDto>>> GetAllRequests(int page, int pageSize)
+        {
+            var paginationParams = new PaginationParameters
+            {
+                Page = page,
+                PageSize = pageSize
+            };
+
+            var results = await _requestsRepository.GetBlockRequestsAsync(paginationParams);
+
+            return Ok(results);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("aproveRequest/{id}")]
+        public async Task<ActionResult> AproveRequest(string id)
+        {
+            var guid = Guid.Parse(id);
+
+            var success = await _requestsRepository.AproveRequestAsync(guid);
+
+            if (success)
+                return Ok();
+
+            return BadRequest("Couldn't aprove the request, please contact the administrator");
         }
     }
 }

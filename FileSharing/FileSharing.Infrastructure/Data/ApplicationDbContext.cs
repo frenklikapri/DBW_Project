@@ -16,7 +16,6 @@ namespace FileSharing.Infrastructure.Data
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
         public DbSet<FileDocument> FileDocuments { get; set; }
-        public DbSet<DownloadLog> DownloadLogs { get; set; }
         public DbSet<BlockRequest> BlockRequests { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)

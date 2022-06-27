@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using FileSharing.App.Extensions;
 using FileSharing.Common.Dtos.Files;
+using FileSharing.Common.Dtos.FileUpload;
 using FileSharing.Common.Dtos.Requests;
 using FileSharing.Common.Enums;
 using Microsoft.AspNetCore.Components;
@@ -33,10 +34,13 @@ namespace FileSharing.App.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if (string.IsNullOrEmpty(_userId))
+            if (firstRender)
             {
-                _userId = await LocalStorage.GetUserId();
-                InvokeAsync(StateHasChanged);
+                if (string.IsNullOrEmpty(_userId))
+                {
+                    _userId = await LocalStorage.GetUserId();
+                    InvokeAsync(StateHasChanged);
+                }
             }
             await base.OnAfterRenderAsync(firstRender);
         }
@@ -127,6 +131,16 @@ namespace FileSharing.App.Pages
         async Task RequestBlockClicked()
         {
             await JS.ShowModalWithIdAsync(_modalBlockId);
+        }
+
+        string FileSizeMB()
+        {
+            if (_document is null)
+                return string.Empty;
+
+            decimal mb = (decimal)_document.Size / (decimal)(1024 * 1024);
+            var sizeStr = string.Format("{0:N2}MB", mb);
+            return sizeStr;
         }
     }
 }

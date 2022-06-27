@@ -4,6 +4,61 @@
 <AuthorizeView Roles="Admin">
     <Authorized>
         <h3>RequestsManagement</h3>
+
+        <PaginatedTable ShowSearch="false" ShowPageSize="false" PageSize="20" UseIQueryable="false"
+                        GetItemsAsListAsync="GetRequestsAsListAsync" TotalColumns="3"
+                        @ref="_paginatedTable">
+            <HeaderTemplate>
+                <tr style="cursor: pointer;">
+                    <th scope="col">Request Type</th>
+                    <th scope="col">Filename</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col"></th>
+                </tr>
+            </HeaderTemplate>
+            <RowTemplate Context="_blockRequestTemplate">
+                <tr>
+                    <td class="@(_blockRequestTemplate.RequestType == Common.Enums.BlockRequestType.Block ? "text-danger" : "text-success")">
+                        @(_blockRequestTemplate.RequestType == Common.Enums.BlockRequestType.Block ? "Block" : "Unblock")
+                    </td>
+                    <td>
+                        @_blockRequestTemplate.FileName
+                    </td>
+                    <td>
+                        @_blockRequestTemplate.UserName
+                    </td>
+                    <td>
+                        @_blockRequestTemplate.Reason
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-primary" @onclick="(() => RespondToRequestClicked(_blockRequestTemplate))">Select</button>
+                    </td>
+                </tr>
+            </RowTemplate>
+        </PaginatedTable>
+
+        <div class="modal" tabindex="-1" id="modalRespondToRequest">
+            <div class="modal-dialog">
+                @if (_requestToRespond is not null)
+                {
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title @(_requestToRespond.RequestType == Common.Enums.BlockRequestType.Block ? "text-danger" : "text-success")">@(_requestToRespond.RequestType == Common.Enums.BlockRequestType.Block ? "Block" : "Unblock") file</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h4>Filename: @_requestToRespond.FileName @(string.IsNullOrEmpty(_requestToRespond.UserName) ? "" : " - " + _requestToRespond.UserName)</h4>
+                            <p>@_requestToRespond.Reason</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @onclick="AproveRequest">Aprove</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
     </Authorized>
     <NotAuthorized>
         <p>You don't have access for this page</p>

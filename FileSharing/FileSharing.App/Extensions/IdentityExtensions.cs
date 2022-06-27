@@ -26,5 +26,19 @@ namespace FileSharing.App.Extensions
             var userId = jwt.Claims.First(claim => claim.Type == ClaimTypes.Sid)?.Value;
             return userId;
         }
+
+        public static async Task<bool> ContainsIdentityRole(this ILocalStorageService localStorage, string role)
+        {
+            if (!(await localStorage.ContainKeyAsync("authToken")))
+                return false;
+
+            var authToken = await localStorage.GetItemAsStringAsync("authToken");
+            authToken = authToken.Replace("\"", "");
+            var handler = new JwtSecurityTokenHandler();
+            var jwt = handler.ReadJwtToken(authToken.Replace("\"", ""));
+            var roles = jwt.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+            var hasRole = roles.Any(r => r.Value == role);
+            return hasRole;
+        }
     }
 }

@@ -15,5 +15,6 @@ namespace FleSharing.Core.Interfaces
         Task<FileDocumentDto> GetFileInfoAsync(string url);
         Task<List<FileDocumentDto>> GetFilesUploadedByUserAsync(string userId);
         Task<FileToDownloadDto> GetFileBytesAsync(string url);
+        Task<bool> DeleteFileAsync(string url);
     }
 }

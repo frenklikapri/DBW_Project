@@ -1,0 +1,62 @@
+﻿.page-item {
+    min-width: 40px;
+    text-align: center;
+    user-select: none;
+}
+
+.table {
+    table-layout: fixed;
+}
+
+.paginated-table-pagesize {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    flex: 0 0 1;
+}
+
+    .paginated-table-pagesize > select {
+        max-width: 100px;
+        width: 100px;
+    }
+
+    .paginated-table-pagesize > span {
+        line-height: calc(1.5em + .75rem + 2px);
+    }
+
+        .paginated-table-pagesize > span:first-child {
+            padding-right: 6px;
+        }
+
+
+        .paginated-table-pagesize > span:last-child {
+            padding-left: 6px;
+        }
+
+.paginated-table-search-container {
+    float: left;
+    display: flex;
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+.page-link {
+    padding: .6rem 1.3rem;
+}
+
+    .paginated-table-search-container > span {
+        line-height: calc(1.5em + .75rem + 2px);
+        padding-right: 6px;
+    }
+
+    .paginated-table-search-container > input {
+        width: 100%;
+        padding-left: 2.7rem;
+    }
+
+.page-item.active .page-link {
+    color: white;
+    background-color: rgb(190, 21, 34);
+    border-color: rgb(190, 21, 34);
+}
+
+

@@ -91,5 +91,19 @@ namespace FileSharing.API.Controllers
             var files = await _fileDocumentRepository.GetFilesUploadedByUserAsync(userId);
             return Ok(files);
         }
+
+        [Authorize]
+        [HttpDelete("deleteFile/{url}")]
+        public async Task<ActionResult> DeleteFile(string url)
+        {
+            url = HttpUtility.UrlDecode(url);
+
+            var success = await _fileDocumentRepository.DeleteFileAsync(url);
+
+            if (success)
+                return Ok();
+            else
+                return BadRequest();
+        }
     }
 }
