@@ -1,4 +1,17 @@
-﻿@page "/download"
+﻿@using FileSharing.Common.Extensions
+@using System.Globalization
+
+@page "/download"
+@implements IDisposable
+
+@if (_showNextDownloadTime && _lastDownloadTime is not null && _secondsLeftToDownload > 0)
+{
+    <p class="time-for-next-download">
+        @string.Format("{0:00}", TimeSpan.FromSeconds(_secondsLeftToDownload).Minutes)
+        :
+        @string.Format("{0:00}", TimeSpan.FromSeconds(_secondsLeftToDownload).Seconds)
+    </p>
+}
 
 <div class="row">
     <div class="col">
@@ -79,8 +92,11 @@
                 <button class="btn btn-danger" @onclick="RequestBlockClicked">Request Block</button>
             }
 
-
-            <button class="btn btn-primary ms-1" @onclick="Download" disabled="@_document.IsBlocked">Download</button>
+            @if (!_document.IsBlocked)
+            {
+                <button class="btn btn-primary ms-1" @onclick="Download" disabled="@(_document.IsBlocked || _loading)">Download</button>
+                <p>@_textForDownload</p>
+            }
         }
     </div>
 </div>

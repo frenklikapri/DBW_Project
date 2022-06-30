@@ -1,4 +1,5 @@
-﻿using FileSharing.Infrastructure.Data;
+﻿using FileSharing.Common.Extensions;
+using FileSharing.Infrastructure.Data;
 using FleSharing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,7 @@ namespace FileSharing.Infrastructure.Services
             var inactiveFiles = (await dbContext
                 .FileDocuments
                 .ToListAsync())
-                .Where(d => DaysBetween(d.LastTimeDownloadedAt, DateTime.Now) >= 14)
+                .Where(d => d.LastTimeDownloadedAt.DaysBetween(DateTime.Now) >= 14)
                 //.Where(d => SecondsBetween(d.LastTimeDownloadedAt, DateTime.UtcNow) >= 30)
                 .ToList();
 
@@ -38,23 +39,6 @@ namespace FileSharing.Infrastructure.Services
             await dbContext.SaveChangesAsync();
 
             return true;
-        }
-
-        int DaysBetween(DateTime d1, DateTime d2)
-        {
-            TimeSpan span = d2.Subtract(d1);
-            return (int)span.TotalDays;
-        }
-
-        int MinutesBetween(DateTime d1, DateTime d2)
-        {
-            TimeSpan span = d2.Subtract(d1);
-            return (int)span.TotalMinutes;
-        }
-        int SecondsBetween(DateTime d1, DateTime d2)
-        {
-            TimeSpan span = d2.Subtract(d1);
-            return (int)span.TotalSeconds;
         }
     }
 }

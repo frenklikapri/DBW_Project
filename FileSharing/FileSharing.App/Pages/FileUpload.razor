@@ -9,12 +9,13 @@
     </label>
 </p>
 
-<button class="btn btn-primary" @onclick="UploadFiles">Upload</button>
+<hr />
 
 @if (_filesToAdd.Count > 0)
 {
-    <div class="card">
+    <div class="card mt-4">
         <div class="card-body">
+            <h5>Files to upload:</h5>
             <ul>
                 @foreach (var file in _filesToAdd)
                 {
@@ -26,11 +27,17 @@
             </ul>
         </div>
     </div>
+
+    <button class="btn btn-primary mt-4" @onclick="UploadFiles" disabled="@(_loading || _filesToAdd.Count == 0)">Send to server</button>
+
+    <hr />
 }
+
 @if (_uploadedFiles.Count > 0)
 {
-    <div class="card">
+    <div class="card mt-4">
         <div class="card-body">
+            <h5>Uploaded files:</h5>
             <ul>
                 @foreach (var file in _uploadedFiles)
                 {
@@ -43,7 +50,4 @@
             </ul>
         </div>
     </div>
-}
-@code {
-
 }

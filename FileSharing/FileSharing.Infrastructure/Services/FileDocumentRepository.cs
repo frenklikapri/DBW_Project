@@ -3,6 +3,7 @@ using FileSharing.Common.Dtos.FileUpload;
 using FileSharing.Common.Extensions;
 using FileSharing.Core.Entities;
 using FileSharing.Infrastructure.Data;
+using FleSharing.Core.Entities;
 using FleSharing.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -74,13 +75,49 @@ namespace FileSharing.Infrastructure.Services
             return await _dbContext.SaveChangesAsync() > 0;
         }
 
-        public async Task<FileToDownloadDto> GetFileBytesAsync(string url)
+        public async Task<FileToDownloadDto> GetFileBytesAsync(string url, string userId, string ip)
         {
+            if (string.IsNullOrEmpty(userId))
+            {
+                //TODO check if the guest can download after 10 min
+                var lastDownloaded = await _dbContext
+                    .DownloadLogs
+                    .Where(d => d.Ip == ip)
+                    .OrderByDescending(d => d.DownloadedAt)
+                    .FirstOrDefaultAsync();
+
+                if (lastDownloaded is not null)
+                {
+                    var minutesDiff = lastDownloaded.DownloadedAt.MinutesBetween(DateTime.UtcNow);
+
+                    if (minutesDiff < 10)
+                    {
+                        return new FileToDownloadDto
+                        {
+                            DownloadLimitPassed = true,
+                            LastDownloadedAt = lastDownloaded.DownloadedAt
+                        };
+                    }
+                }
+            }
+
             var document = await _dbContext
                 .FileDocuments
                 .FirstOrDefaultAsync(d => d.FileUrl == url);
 
             document.LastTimeDownloadedAt = DateTime.UtcNow;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                //TODO add a log that the guest with ip downloaded a file
+                var toAdd = new DownloadLog
+                {
+                    DownloadedAt = DateTime.UtcNow,
+                    Ip = ip
+                };
+
+                _dbContext.DownloadLogs.Add(toAdd);
+            }
 
             await _dbContext.SaveChangesAsync();
 

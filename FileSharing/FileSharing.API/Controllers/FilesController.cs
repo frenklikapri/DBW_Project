@@ -5,6 +5,7 @@ using FleSharing.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using System.Net;
 using System.Web;
 
@@ -28,6 +29,8 @@ namespace FileSharing.API.Controllers
         }
 
         [HttpPost]
+        [RequestFormLimits(MultipartBodyLengthLimit = 209715200)]
+        [RequestSizeLimit(209715200)]
         public async Task<ActionResult<List<FileUploadResultDto>>> PostFile(
             [FromForm] IEnumerable<IFormFile> files)
         {
@@ -67,21 +70,33 @@ namespace FileSharing.API.Controllers
             return Ok(document);
         }
 
-        [HttpGet("download/{key}/{url}")]
-        public async Task<ActionResult> DownloadFile(string key, string url)
+        [HttpGet("download/{url}")]
+        public async Task<ActionResult> DownloadFile(string url)
         {
+            if (string.IsNullOrEmpty(Request.Headers.Referer))
+                return BadRequest("Please download files using the UI app.");
+
             url = HttpUtility.UrlDecode(url);
 
-            //TODO save key somewhere else
-            if (key != "Key123$%^&*(")
-                return BadRequest();
+            var userId = HttpContext.GetUserId();
+            var ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            var bytes = await _fileDocumentRepository.GetFileBytesAsync(url);
+            var dto = await _fileDocumentRepository.GetFileBytesAsync(url, userId, ip);
 
-            if (bytes is null)
+            if (dto is null)
                 return NotFound();
 
-            return File(bytes.Bytes, "text/plain", bytes.FileName);
+            if (dto.DownloadLimitPassed)
+            {
+                return BadRequest($"Your limit of downloading 1 file per 10 minutes has passed. Last file downloaded at: {dto.LastDownloadedAt.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)}");
+            }
+
+            Stream stream = new MemoryStream(dto.Bytes);
+
+            if (stream is null)
+                return NotFound();
+
+            return File(stream, "application/octet-stream", fileDownloadName: dto.FileName);
         }
 
         [Authorize]

@@ -3,10 +3,10 @@
 
 <AuthorizeView Roles="Admin">
     <Authorized>
-        <h3>RequestsManagement</h3>
+        <h3>Request Management</h3>
 
         <PaginatedTable ShowSearch="false" ShowPageSize="false" PageSize="20" UseIQueryable="false"
-                        GetItemsAsListAsync="GetRequestsAsListAsync" TotalColumns="3"
+                        GetItemsAsListAsync="GetRequestsAsListAsync" TotalColumns="5"
                         @ref="_paginatedTable">
             <HeaderTemplate>
                 <tr style="cursor: pointer;">

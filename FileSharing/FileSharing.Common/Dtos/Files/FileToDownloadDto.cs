@@ -8,6 +8,8 @@ namespace FileSharing.Common.Dtos.Files
 {
     public class FileToDownloadDto
     {
+        public bool DownloadLimitPassed { get; set; }
+        public DateTime LastDownloadedAt { get; set; }
         public string FileName { get; set; }
         public byte[] Bytes { get; set; }
     }

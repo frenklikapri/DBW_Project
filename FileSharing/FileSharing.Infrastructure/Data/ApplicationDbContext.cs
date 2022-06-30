@@ -17,6 +17,7 @@ namespace FileSharing.Infrastructure.Data
     {
         public DbSet<FileDocument> FileDocuments { get; set; }
         public DbSet<BlockRequest> BlockRequests { get; set; }
+        public DbSet<DownloadLog> DownloadLogs { get; set; }
 
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {

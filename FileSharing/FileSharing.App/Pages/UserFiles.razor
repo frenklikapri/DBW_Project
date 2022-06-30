@@ -1,15 +1,48 @@
 ﻿@page "/files"
+@using System.Globalization
 @attribute [Authorize]
 
 <AuthorizeView>
     <Authorized>
-        <h3>UserFiles</h3>
+        <h3>My Files</h3>
 
-        @foreach(var file in _files)
-        {
-            <p>@file.Filename</p>
-            <button class="btn btn-danger" @onclick="(() => DeleteFile(file))">Delete</button>
-        }
+
+        <PaginatedTable ShowSearch="false" ShowPageSize="false" HasPagination="false" UseIQueryable="false"
+                        GetItemsAsListAsync="GetFilesAsListAsync" TotalColumns="3"
+                        @ref="_paginatedTable">
+            <HeaderTemplate>
+                <tr style="cursor: pointer;">
+                    <th scope="col">Filename</th>
+                    <th scope="col">File size</th>
+                    <th scope="col">Upload date</th>
+                    <th scope="col">Download Url</th>
+                    <th scope="col">Blocking Status</th>
+                    <th scope="col"></th>
+                </tr>
+            </HeaderTemplate>
+            <RowTemplate Context="_fileDocumentTemplate">
+                <tr>
+                    <td>
+                        @_fileDocumentTemplate.Filename
+                    </td>
+                    <td>
+                        @FileSizeMB(_fileDocumentTemplate.Size)
+                    </td>
+                    <td>
+                        @_fileDocumentTemplate.UploadedAt.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)
+                    </td>
+                    <td>
+                        @_fileDocumentTemplate.FileUrl
+                    </td>
+                    <td class="@(_fileDocumentTemplate.IsBlocked ? "text-danger" : "text-success")">
+                        @(_fileDocumentTemplate.IsBlocked ? "Blocked" : "Not blocked")
+                    </td>
+                    <td class="text-end">
+                        <button class="btn btn-danger" @onclick="(() => DeleteFile(_fileDocumentTemplate))">Delete</button>
+                    </td>
+                </tr>
+            </RowTemplate>
+        </PaginatedTable>
     </Authorized>
     <NotAuthorized>
         Please login!
