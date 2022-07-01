@@ -94,7 +94,18 @@
 
             @if (!_document.IsBlocked)
             {
-                <button class="btn btn-primary ms-1" @onclick="Download" disabled="@(_document.IsBlocked || _loading)">Download</button>
+                <button class="btn btn-primary ms-1" @onclick="Download" disabled="@(_document.IsBlocked || _loading)">
+                    @if (_loading)
+                    {
+
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span class="sr-only"></span><text>Downloading...</text>
+                    }
+                    else
+                    {
+                        <text>Download</text>
+                    }
+                </button>
                 <p>@_textForDownload</p>
             }
         }

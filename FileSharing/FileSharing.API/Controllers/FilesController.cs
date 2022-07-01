@@ -1,6 +1,7 @@
 ﻿using FileSharing.API.Extensions;
 using FileSharing.Common.Dtos.Files;
 using FileSharing.Common.Dtos.FileUpload;
+using FileSharing.Common.Dtos.PaginatedTable;
 using FleSharing.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -101,9 +102,13 @@ namespace FileSharing.API.Controllers
 
         [Authorize]
         [HttpGet("getUserFiles/{userId}")]
-        public async Task<ActionResult<List<FileDocumentDto>>> GetUserFiles(string userId)
+        public async Task<ActionResult<PaginatedListResult<FileDocumentDto>>> GetUserFiles(string userId, int page, int pageSize,
+            string? search = "")
         {
-            var files = await _fileDocumentRepository.GetFilesUploadedByUserAsync(userId);
+            if (search is null)
+                search = string.Empty;
+
+            var files = await _fileDocumentRepository.GetFilesUploadedByUserAsync(userId, search, page, pageSize);
             return Ok(files);
         }
 

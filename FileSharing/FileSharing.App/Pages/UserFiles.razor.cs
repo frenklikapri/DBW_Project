@@ -7,6 +7,7 @@ using FileSharing.Common.Dtos.Requests;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using System.Net.Http.Json;
+using System.Text.Encodings.Web;
 using System.Web;
 
 namespace FileSharing.App.Pages
@@ -62,12 +63,16 @@ namespace FileSharing.App.Pages
                 };
             try
             {
-                var result = await Http.GetFromJsonAsync<List<FileDocumentDto>>($"Files/getUserFiles/{_userId}");
-                return new PaginatedListResult<FileDocumentDto>
-                {
-                    CountAll = result.Count,
-                    Items = result
-                };
+                if (!string.IsNullOrWhiteSpace(paginationParameters.Search))
+                    paginationParameters.Search = HttpUtility.UrlEncode(paginationParameters.Search);
+
+                var url = $"Files/getUserFiles/{_userId}?page={paginationParameters.Page}&pageSize={paginationParameters.PageSize}";
+
+                if (!string.IsNullOrWhiteSpace(paginationParameters.Search))
+                    url += $"&search={paginationParameters.Search}";
+
+                var result = await Http.GetFromJsonAsync<PaginatedListResult<FileDocumentDto>>(url);
+                return result;
             }
             catch (Exception ex)
             {

@@ -25,6 +25,9 @@ namespace FileSharing.App.Pages
         [Inject]
         public ILocalStorageService LocalStorage { get; set; }
 
+        [Inject]
+        public IConfiguration Configuration { get; set; }
+
         private const string _modalUnblockId = "modalUnBlockRequest";
         private const string _modalBlockId = "modalBlockRequest";
 
@@ -92,8 +95,7 @@ namespace FileSharing.App.Pages
             _loading = true;
             try
             {
-                //TODO change static url
-                var url = $"https://localhost:7214/api/files/download/{HttpUtility.UrlEncode(_document.FileUrl)}";
+                var url = $"{Configuration["APIBaseUrl"]}files/download/{HttpUtility.UrlEncode(_document.FileUrl)}";
 
                 using (HttpResponseMessage response = await Http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -126,7 +128,7 @@ namespace FileSharing.App.Pages
                     {
                         var totalRead = 0L;
                         var totalReads = 0L;
-                        var buffer = new byte[209715200];
+                        var buffer = new byte[_document.Size];
                         var isMoreToRead = true;
 
                         do

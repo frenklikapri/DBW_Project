@@ -36,12 +36,13 @@ namespace FileSharing.API.Controllers
         }
 
         [HttpGet("getAllRequests")]
-        public async Task<ActionResult<PaginatedListResult<BlockRequestDto>>> GetAllRequests(int page, int pageSize)
+        public async Task<ActionResult<PaginatedListResult<BlockRequestDto>>> GetAllRequests(int page, int pageSize, string? search = "")
         {
             var paginationParams = new PaginationParameters
             {
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize,
+                Search = search
             };
 
             var results = await _requestsRepository.GetBlockRequestsAsync(paginationParams);

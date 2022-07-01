@@ -1,5 +1,6 @@
 ﻿using FileSharing.Common.Dtos.Files;
 using FileSharing.Common.Dtos.FileUpload;
+using FileSharing.Common.Dtos.PaginatedTable;
 using FileSharing.Common.Extensions;
 using FileSharing.Core.Entities;
 using FileSharing.Infrastructure.Data;
@@ -79,7 +80,6 @@ namespace FileSharing.Infrastructure.Services
         {
             if (string.IsNullOrEmpty(userId))
             {
-                //TODO check if the guest can download after 10 min
                 var lastDownloaded = await _dbContext
                     .DownloadLogs
                     .Where(d => d.Ip == ip)
@@ -109,7 +109,6 @@ namespace FileSharing.Infrastructure.Services
 
             if (string.IsNullOrEmpty(userId))
             {
-                //TODO add a log that the guest with ip downloaded a file
                 var toAdd = new DownloadLog
                 {
                     DownloadedAt = DateTime.UtcNow,
@@ -151,11 +150,28 @@ namespace FileSharing.Infrastructure.Services
             return dto;
         }
 
-        public async Task<List<FileDocumentDto>> GetFilesUploadedByUserAsync(string userId)
+        public async Task<PaginatedListResult<FileDocumentDto>> GetFilesUploadedByUserAsync(string userId, string search, int page, int pageSize)
         {
-            var documents = await _dbContext
+            var query = _dbContext
                 .FileDocuments
                 .Where(d => d.UserId == userId)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query
+                    .Where(d => d.Filename.Contains(search) || d.FileUrl.Contains(search))
+                    .AsQueryable();
+            }
+
+            var total = await query.CountAsync();
+
+            query = query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .AsQueryable();
+
+            var documents = await query
                 .Select(d => new FileDocumentDto
                 {
                     UserId = d.UserId,
@@ -167,7 +183,11 @@ namespace FileSharing.Infrastructure.Services
                     UploadedAt = d.UploadedAt,
                 }).ToListAsync();
 
-            return documents;
+            return new PaginatedListResult<FileDocumentDto>
+            {
+                Items = documents,
+                CountAll = total
+            };
         }
 
         public async Task<List<FileUploadResultDto>> SaveAddedFilesAsync()

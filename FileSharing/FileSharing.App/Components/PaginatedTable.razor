@@ -8,24 +8,18 @@
             @if (ShowSearch)
             {
                 <div class="col-sm-7">
-                    <div class="top-bar">
-                        <div class="search">
-                            <div class="search-form pure-form">
-                                <input class="search-input w-100 search_field" type="search" placeholder="@SearchPlaceholder" aria-label="Search"
-                           @oninput="SearchOnChange">
-                                <object data="assets/icons/svg/icon-search.svg" width="20" height="20" class="svg_icon"> </object>
-                            </div>
-                        </div>
-                    </div>
+                    <input class="form-control w-100" type="search" placeholder="@SearchPlaceholder" aria-label="Search"
+               @oninput="SearchOnChange">
+                    <object data="assets/icons/svg/icon-search.svg" width="20" height="20" class="svg_icon"> </object>
                 </div>
             }
             @if (ShowPageSize)
             {
-                <div class="@(ShowSearch ? "col-sm-5" : "col-sm-12") right-sec">
+                <div class="@(ShowSearch ? "col-sm-5" : "col-sm-12") d-flex">
                     <p class="p-2 mb-0">Show </p>
-                    <select class="form-control options"
-                        value="@PageSize"
-                        @onchange="PageSizeChange">
+                    <select class="form-control"
+                value="@PageSize"
+                @onchange="PageSizeChange">
                         <option value="10">10</option>
                         <option value="20">20</option>
                         <option value="50">50</option>

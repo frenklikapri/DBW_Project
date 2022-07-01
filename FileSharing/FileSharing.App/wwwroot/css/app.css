@@ -62,3 +62,11 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+.page-item {
+    cursor: pointer;
+}
+
+    .page-item.disabled, .page-item.active {
+        cursor: unset !important;
+    }

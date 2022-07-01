@@ -34,7 +34,6 @@ namespace FileSharing.App.Pages
             }
             else
             {
-                //TODO return token from registration
                 var loginResult = await AuthenticationService.Login(new UserForAuthenticationDto
                 {
                     Email = _userForRegistration.Email,

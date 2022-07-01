@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,6 +68,13 @@ namespace FileSharing.Infrastructure.Services
             var query = _dbContext
                 .BlockRequests
                 .AsQueryable();
+
+            if (!string.IsNullOrEmpty(paginationParameters.Search))
+                query = query
+                    .Where(b => b.User.UserName.Contains(paginationParameters.Search)
+                        || b.Reason.Contains(paginationParameters.Search)
+                        || b.FileDocument.Filename.Contains(paginationParameters.Search))
+                    .AsQueryable();
 
             var countAll = await query.CountAsync();
             var list = await query

@@ -31,6 +31,8 @@ namespace FileSharing.App.Pages
             try
             {
                 var url = $"Requests/getAllRequests?page={paginationParameters.Page}&pageSize={paginationParameters.PageSize}";
+                if (!string.IsNullOrWhiteSpace(paginationParameters.Search))
+                    url += $"&search={paginationParameters.Search}";
                 var result = await Http
                     .GetFromJsonAsync<PaginatedListResult<BlockRequestDto>>(url);
                 return result;

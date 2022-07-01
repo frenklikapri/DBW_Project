@@ -24,7 +24,7 @@ namespace FileSharing.App.Pages
         {
             if (_loading)
                 return;
-            //TODO implement maxfilesize
+
             long maxFileSize = 1024 * 1024 * 15;
 
             foreach (var file in e.GetMultipleFiles())
@@ -32,7 +32,7 @@ namespace FileSharing.App.Pages
                 if (_filesToAdd.SingleOrDefault(
                     f => f.FileName == file.Name) is null)
                 {
-                    if(file.Size > maxFileSize)
+                    if (file.Size > maxFileSize)
                     {
                         await JS.ShowErrorAsync("This file exceeds the limit of 10MiB. Please upload a smaller file!", "Warning");
                         return;
@@ -41,8 +41,9 @@ namespace FileSharing.App.Pages
                     var fileContent =
                     new StreamContent(file.OpenReadStream(maxFileSize));
 
-                    fileContent.Headers.ContentType =
-                        new MediaTypeHeaderValue(file.ContentType);
+                    //fileContent.Headers.ContentType =
+                    //    new MediaTypeHeaderValue(file.ContentType);
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
                     _filesToAdd.Add(new FileContentDto
                     {
