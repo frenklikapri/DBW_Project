@@ -36,11 +36,7 @@ namespace FileSharing.App.Pages
         private BlockFileFormDto _unblockFileDto = new();
         private BlockFileFormDto _blockFileDto = new();
         private string _userId;
-        private string _textForDownload = string.Empty;
-        private long _totalRead = 0L;
-        private bool _showNextDownloadTime;
         private DateTime? _lastDownloadTime;
-        private Timer _nextDownloadTimer;
         private bool _loading = false;
 
         private int _secondsLeftToDownload
@@ -49,7 +45,7 @@ namespace FileSharing.App.Pages
             {
                 try
                 {
-                    var seconds = 600 - _lastDownloadTime.Value.SecondsBetween(DateTime.UtcNow);
+                    var seconds = 600 - _lastDownloadTime.Value.SecondsBetween(DateTime.Now);
                     return seconds;
                 }
                 catch (Exception ex)
@@ -85,11 +81,6 @@ namespace FileSharing.App.Pages
             }
         }
 
-        public void Dispose()
-        {
-            _nextDownloadTimer?.Dispose();
-        }
-
         private async Task Download()
         {
             _loading = true;
@@ -97,66 +88,34 @@ namespace FileSharing.App.Pages
             {
                 var url = $"{Configuration["APIBaseUrl"]}files/download/{HttpUtility.UrlEncode(_document.FileUrl)}";
 
-                using (HttpResponseMessage response = await Http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+                Http.DefaultRequestHeaders.Add("SentBy", "Application");
+
+                using HttpResponseMessage response = await Http.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                
+                if (!response.IsSuccessStatusCode)
                 {
-                    if (!response.IsSuccessStatusCode)
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
                     {
-                        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                        {
-                            var str = await response.Content.ReadAsStringAsync();
-                            var lastDownloadedStr = str.Substring(str.IndexOf(":") + 2).Trim();
-                            var parsed = DateTime.TryParseExact(lastDownloadedStr, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None,
-                                out DateTime lastDownloadedAt);
-                            await JS.ShowSuccessAsync("You have passed the limit of downloading 1 file per 10 minutes.");
-                            _showNextDownloadTime = true;
-                            _lastDownloadTime = lastDownloadedAt;
-                            _nextDownloadTimer = new Timer(async _ =>  // async void
-                            {
-                                await InvokeAsync(StateHasChanged);
-                            }, null, 0, 1000);
-                            return;
-                        }
-                        else
-                        {
-                            await JS.ShowErrorAsync("Couldn't download the file!");
-                            return;
-                        }
+                        var str = await response.Content.ReadAsStringAsync();
+                        var lastDownloadedStr = str.Substring(str.IndexOf(":") + 2).Trim();
+                        var parsed = DateTime.TryParseExact(lastDownloadedStr, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None,
+                            out DateTime lastDownloadedAt);
+                        await JS.ShowSuccessAsync("You have passed the limit of downloading 1 file per 10 minutes.");
+                        _lastDownloadTime = lastDownloadedAt;
+                        return;
                     }
-                    _showNextDownloadTime = false;
-                    _nextDownloadTimer = null;
-                    using (Stream contentStream = await response.Content.ReadAsStreamAsync(), fileStream = new MemoryStream())
+                    else
                     {
-                        var totalRead = 0L;
-                        var totalReads = 0L;
-                        var buffer = new byte[_document.Size];
-                        var isMoreToRead = true;
-
-                        do
-                        {
-                            var read = await contentStream.ReadAsync(buffer, 0, buffer.Length);
-                            if (read == 0)
-                            {
-                                isMoreToRead = false;
-                            }
-                            else
-                            {
-                                await fileStream.WriteAsync(buffer, 0, read);
-
-                                totalRead += read;
-                                _totalRead = totalRead;
-                                totalReads += 1;
-
-                                _textForDownload = string.Format("total bytes downloaded so far: {0:n0}", totalRead);
-                                InvokeAsync(StateHasChanged);
-                            }
-                        }
-                        while (isMoreToRead);
-
-                        await JS.InvokeAsync<object>("BlazorDownloadFile", _document.Filename,
-                            "application/octet-stream",
-                            buffer);
+                        await JS.ShowErrorAsync("Couldn't download the file!");
+                        return;
                     }
                 }
+
+                var bytes = await response.Content.ReadAsByteArrayAsync();
+
+                await JS.InvokeAsync<object>("BlazorDownloadFile", _document.Filename,
+                    "application/octet-stream",
+                    bytes);
             }
             catch (Exception ex)
             {

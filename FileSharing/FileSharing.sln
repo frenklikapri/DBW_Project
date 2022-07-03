@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.Common", "FileSharing.Common\FileSharing.Common.csproj", "{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.App", "FileSharing.App\FileSharing.App.csproj", "{8246E24A-1637-49F3-A993-5A53F69DEF22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileSharing.App", "FileSharing.App\FileSharing.App.csproj", "{A1F06B5B-2B1B-4EA2-B717-1CDDF28D5F8B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3CAAF9D-A452-41F5-9FF5-C2B79699CE4B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8246E24A-1637-49F3-A993-5A53F69DEF22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8246E24A-1637-49F3-A993-5A53F69DEF22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8246E24A-1637-49F3-A993-5A53F69DEF22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8246E24A-1637-49F3-A993-5A53F69DEF22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1F06B5B-2B1B-4EA2-B717-1CDDF28D5F8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F06B5B-2B1B-4EA2-B717-1CDDF28D5F8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F06B5B-2B1B-4EA2-B717-1CDDF28D5F8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F06B5B-2B1B-4EA2-B717-1CDDF28D5F8B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

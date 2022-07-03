@@ -90,7 +90,8 @@ namespace FileSharing.Infrastructure.Services
                     RequestType = b.RequestType,
                     UserId = b.UserId,
                     FileName = b.FileDocument.Filename,
-                    UserName = b.User.UserName
+                    UserName = b.User.UserName,
+                    Url = b.FileDocument.FileUrl
                 })
                 .ToListAsync();
 

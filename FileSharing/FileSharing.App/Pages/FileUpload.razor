@@ -5,7 +5,7 @@
 <p>
     <label>
         Upload
-        <InputFile OnChange="@OnInputFileChange" multiple />
+        <InputFile OnChange="@OnInputFileChange" MaxBufferSize="@(10*1024)" multiple/>
     </label>
 </p>
 

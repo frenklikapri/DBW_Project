@@ -26,6 +26,7 @@ namespace FileSharing.App.Shared
         public void Dispose()
         {
             IdentityState.StateChanged -= IdentityState_StateChanged;
+            base.Dispose();
         }
 
         private async void IdentityState_StateChanged(object? sender, EventArgs e)

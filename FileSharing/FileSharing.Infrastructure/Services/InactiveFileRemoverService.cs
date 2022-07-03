@@ -28,7 +28,7 @@ namespace FileSharing.Infrastructure.Services
                 .FileDocuments
                 .ToListAsync())
                 .Where(d => d.LastTimeDownloadedAt.DaysBetween(DateTime.Now) >= 14)
-                //.Where(d => SecondsBetween(d.LastTimeDownloadedAt, DateTime.UtcNow) >= 30)
+                //.Where(d => SecondsBetween(d.LastTimeDownloadedAt, DateTime.Now) >= 30)
                 .ToList();
 
             foreach (var file in inactiveFiles)

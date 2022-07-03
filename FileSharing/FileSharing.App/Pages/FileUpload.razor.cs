@@ -38,8 +38,20 @@ namespace FileSharing.App.Pages
                         return;
                     }
 
-                    var fileContent =
-                    new StreamContent(file.OpenReadStream(maxFileSize));
+                    //var fileContent =
+                    //new StreamContent(file.OpenReadStream(maxFileSize));
+
+                    var stream = file.OpenReadStream(file.Size);
+
+
+                    byte[] buffer = new byte[file.Size];
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        await file.OpenReadStream(file.Size).CopyToAsync(ms);
+                        buffer = ms.ToArray();
+                    }
+
+                    var fileContent = new ByteArrayContent(buffer);
 
                     //fileContent.Headers.ContentType =
                     //    new MediaTypeHeaderValue(file.ContentType);
@@ -51,6 +63,8 @@ namespace FileSharing.App.Pages
                         Name = "\"files\"",
                         FileName = file.Name
                     });
+
+                    InvokeAsync(StateHasChanged);
                 }
             }
         }

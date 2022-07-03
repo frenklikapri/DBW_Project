@@ -40,8 +40,8 @@ namespace FileSharing.Infrastructure.Services
                 UserId = fileUploadDto.UserId,
                 Size = fileUploadDto.Size,
                 FileUrl = url,
-                UploadedAt = DateTime.UtcNow,
-                LastTimeDownloadedAt = DateTime.UtcNow
+                UploadedAt = DateTime.Now,
+                LastTimeDownloadedAt = DateTime.Now
             };
 
             _dbContext.FileDocuments.Add(toAdd);
@@ -88,7 +88,7 @@ namespace FileSharing.Infrastructure.Services
 
                 if (lastDownloaded is not null)
                 {
-                    var minutesDiff = lastDownloaded.DownloadedAt.MinutesBetween(DateTime.UtcNow);
+                    var minutesDiff = lastDownloaded.DownloadedAt.MinutesBetween(DateTime.Now);
 
                     if (minutesDiff < 10)
                     {
@@ -105,13 +105,13 @@ namespace FileSharing.Infrastructure.Services
                 .FileDocuments
                 .FirstOrDefaultAsync(d => d.FileUrl == url);
 
-            document.LastTimeDownloadedAt = DateTime.UtcNow;
+            document.LastTimeDownloadedAt = DateTime.Now;
 
             if (string.IsNullOrEmpty(userId))
             {
                 var toAdd = new DownloadLog
                 {
-                    DownloadedAt = DateTime.UtcNow,
+                    DownloadedAt = DateTime.Now,
                     Ip = ip
                 };
 

@@ -2,13 +2,12 @@
 using FileSharing.App.Auth;
 using FileSharing.App.Services;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 namespace FileSharing.App.Extensions
 {
     public static class DependencyInjectionExtensions
     {
-        public static WebAssemblyHostBuilder AddCommonServices(this WebAssemblyHostBuilder builder)
+        public static WebApplicationBuilder AddCommonServices(this WebApplicationBuilder builder)
         {
             builder.Services.AddBlazoredLocalStorage();
             builder.Services.AddAuthorizationCore();

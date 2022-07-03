@@ -74,7 +74,9 @@ namespace FileSharing.API.Controllers
         [HttpGet("download/{url}")]
         public async Task<ActionResult> DownloadFile(string url)
         {
-            if (string.IsNullOrEmpty(Request.Headers.Referer))
+            //we use a custom header (we could use referer) but blazor server app doesn't send a referer
+            //only blazor webassembly sends it, but webassembly can't use selenium
+            if (string.IsNullOrEmpty(Request.Headers["SentBy"]))
                 return BadRequest("Please download files using the UI app.");
 
             url = HttpUtility.UrlDecode(url);

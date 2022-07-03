@@ -8,7 +8,7 @@
                 <h3>Request Management</h3>
             </div>
             <div class="col-6 text-end">
-                @if (!_loggedIn)
+                @if (_loaded && !_loggedIn)
                 {
                     <button class="btn btn-primary" @onclick="LoginToWTC">Login to WTC</button>
                 }
@@ -42,7 +42,10 @@
                         @_blockRequestTemplate.Reason
                     </td>
                     <td class="text-end">
-                        <button class="btn btn-primary" @onclick="(() => RespondToRequestClicked(_blockRequestTemplate))">Select</button>
+                        @if (_loggedIn)
+                        {
+                            <button class="btn btn-primary" @onclick="(() => RespondToRequestClicked(_blockRequestTemplate))">Select</button>
+                        }
                     </td>
                 </tr>
             </RowTemplate>
@@ -62,8 +65,8 @@
                             <p>@_requestToRespond.Reason</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @onclick="AproveRequest">Aprove</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" @onclick="AproveRequest" disabled="@_loading">Aprove</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" disabled="@_loading">Close</button>
                         </div>
                     </div>
                 }
