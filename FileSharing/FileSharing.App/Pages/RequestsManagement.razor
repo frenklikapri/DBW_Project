@@ -3,7 +3,17 @@
 
 <AuthorizeView Roles="Admin">
     <Authorized>
-        <h3>Request Management</h3>
+        <div class="row">
+            <div class="col-6">
+                <h3>Request Management</h3>
+            </div>
+            <div class="col-6 text-end">
+                @if (!_loggedIn)
+                {
+                    <button class="btn btn-primary" @onclick="LoginToWTC">Login to WTC</button>
+                }
+            </div>
+        </div>
 
         <PaginatedTable PageSize="10" UseIQueryable="false"
                         GetItemsAsListAsync="GetRequestsAsListAsync" TotalColumns="5"
