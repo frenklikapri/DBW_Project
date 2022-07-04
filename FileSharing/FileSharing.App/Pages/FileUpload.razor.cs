@@ -19,7 +19,6 @@ namespace FileSharing.App.Pages
         private List<FileContentDto> _filesToAdd = new();
         private List<FileUploadResultDto> _uploadedFiles = new();
         private bool _loading = false;
-        private string _tempPath = Guid.NewGuid().ToString();
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
@@ -48,8 +47,6 @@ namespace FileSharing.App.Pages
 
                     var fileContent = new ByteArrayContent(buffer);
 
-                    //fileContent.Headers.ContentType =
-                    //    new MediaTypeHeaderValue(file.ContentType);
                     fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
 
                     _filesToAdd.Add(new FileContentDto
