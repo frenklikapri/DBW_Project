@@ -38,6 +38,8 @@ namespace FileSharing.App.Pages
         private string _userId;
         private DateTime? _lastDownloadTime;
         private bool _loading = false;
+        private bool _showNextDownloadTime;
+        private Timer _nextDownloadTimer;
 
         private int _secondsLeftToDownload
         {
@@ -66,6 +68,11 @@ namespace FileSharing.App.Pages
                 }
             }
             await base.OnAfterRenderAsync(firstRender);
+        }
+
+        public void Dispose()
+        {
+            _nextDownloadTimer?.Dispose();
         }
 
         private async Task GetInfo()
@@ -101,27 +108,36 @@ namespace FileSharing.App.Pages
                         var parsed = DateTime.TryParseExact(lastDownloadedStr, "dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None,
                             out DateTime lastDownloadedAt);
                         await JS.ShowSuccessAsync("You have passed the limit of downloading 1 file per 10 minutes.");
+                        _showNextDownloadTime = true;
+                        _loading = false;
                         _lastDownloadTime = lastDownloadedAt;
+                        _nextDownloadTimer = new Timer(async _ =>  // async void
+                        {
+                            await InvokeAsync(StateHasChanged);
+                        }, null, 0, 1000);
                         return;
                     }
                     else
                     {
                         await JS.ShowErrorAsync("Couldn't download the file!");
+                        _loading = false;
                         return;
                     }
                 }
+                _showNextDownloadTime = false;
 
                 var bytes = await response.Content.ReadAsByteArrayAsync();
 
                 await JS.InvokeAsync<object>("BlazorDownloadFile", _document.Filename,
                     "application/octet-stream",
                     bytes);
+                _loading = false;
             }
             catch (Exception ex)
             {
+                _loading = false;
                 await JS.ShowErrorAsync("Couldn't download the file!");
             }
-            _loading = false;
         }
 
         async Task UrlOnInput(ChangeEventArgs e)

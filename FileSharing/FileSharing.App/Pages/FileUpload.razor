@@ -19,7 +19,7 @@
             <ul>
                 @foreach (var file in _filesToAdd)
                 {
-                    <li>
+                    <li class="mt-2">
                         File: @file.FileName <button class="btn btn-danger" @onclick="(()=> RemoveFile(file))">Remove</button>
                         <br>
                     </li>

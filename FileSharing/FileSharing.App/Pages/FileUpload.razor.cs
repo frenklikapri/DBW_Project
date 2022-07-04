@@ -19,6 +19,7 @@ namespace FileSharing.App.Pages
         private List<FileContentDto> _filesToAdd = new();
         private List<FileUploadResultDto> _uploadedFiles = new();
         private bool _loading = false;
+        private string _tempPath = Guid.NewGuid().ToString();
 
         private async Task OnInputFileChange(InputFileChangeEventArgs e)
         {
@@ -37,12 +38,6 @@ namespace FileSharing.App.Pages
                         await JS.ShowErrorAsync("This file exceeds the limit of 10MiB. Please upload a smaller file!", "Warning");
                         return;
                     }
-
-                    //var fileContent =
-                    //new StreamContent(file.OpenReadStream(maxFileSize));
-
-                    var stream = file.OpenReadStream(file.Size);
-
 
                     byte[] buffer = new byte[file.Size];
                     using (MemoryStream ms = new MemoryStream())
